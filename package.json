@@ -37,7 +37,8 @@
     "remark-breaks": "^4.0.0",
     "remark-gfm": "^4.0.1",
     "three": "^0.183.2",
-    "undici": "^7.26.0"
+    "undici": "^7.26.0",
+    "@supabase/supabase-js": "^2.49.1"
   },
   "devDependencies": {
     "@gltf-transform/core": "^4.3.0",
