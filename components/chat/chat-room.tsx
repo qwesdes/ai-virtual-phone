@@ -653,9 +653,7 @@ const ChatTextInputBar = memo(forwardRef<ChatTextInputHandle, {
         const trimmed = inputText.trim();
         if (!trimmed) return;
         if (!onSendText(trimmed)) return;
-		```
         supabase.from('user_activity').upsert({ user_id: 'yueyue', last_seen: new Date().toISOString() }, { onConflict: 'user_id' }).then(({ error }) => { if (error) console.error('user_activity update failed:', error); });
-```
         setInputText("");
         resetTextareaHeight();
         onClosePanels();
