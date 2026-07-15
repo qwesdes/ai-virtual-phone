@@ -3413,6 +3413,7 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     };
 
     const handleSendText = (text: string): boolean => {
+        onUserActivity();
         if (!ensureGroupSpeakPermission()) return false;
         if (isGenerating) {
             showChatToast("请先等待对方回复");
