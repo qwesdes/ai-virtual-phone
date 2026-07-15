@@ -3047,6 +3047,13 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
         return true;
     };
 
+    // 自动唤醒定时器
+    useEffect(() => {
+      if (!session?.id) return;
+      startAutoWakeup((prompt) => sendSystemInstruction(prompt));
+      return () => stopAutoWakeup();
+    }, [session?.id]);
+
     const handleOpenCustomPlusAction = useCallback((action: RegisteredCustomAppChatPlusAction) => {
         setShowPlusMenu(false);
         setShowEmojiPanel(false);
