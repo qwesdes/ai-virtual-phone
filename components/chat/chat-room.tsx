@@ -13,6 +13,7 @@ import { generateChatCompletion, generateOfflineChatCompletion, flattenCompletio
 import { sendBrowserNotification } from "@/lib/browser-notification";
 import { dispatchChatMessageNotice } from "@/lib/chat-notification-events";
 import { supabase } from "@/lib/supabase";
+import { startAutoWakeup, onUserActivity, stopAutoWakeup } from "@/lib/auto-wakeup";
 import { shouldSendChatInputOnEnter } from "@/lib/chat-input-keyboard";
 import { useChatBottomReserve } from "./use-chat-bottom-reserve";
 import ReactMarkdown from "react-markdown";
