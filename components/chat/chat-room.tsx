@@ -3048,9 +3048,14 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     };
 
     // 自动唤醒定时器
+    const sendSystemInstructionRef = useRef(sendSystemInstruction);
+    useEffect(() => {
+      sendSystemInstructionRef.current = sendSystemInstruction;
+    });
+
     useEffect(() => {
       if (!session?.id) return;
-      startAutoWakeup((prompt) => sendSystemInstruction(prompt));
+      startAutoWakeup((prompt) => sendSystemInstructionRef.current(prompt));
       return () => stopAutoWakeup();
     }, [session?.id]);
 
