@@ -3048,14 +3048,31 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     };
 
     // 自动唤醒定时器
-    const sendSystemInstructionRef = useRef(sendSystemInstruction);
+    const runManagedGenerationRef = useRef(runManagedGeneration);
     useEffect(() => {
-      sendSystemInstructionRef.current = sendSystemInstruction;
+      runManagedGenerationRef.current = runManagedGeneration;
     });
 
     useEffect(() => {
       if (!session?.id) return;
-      startAutoWakeup((prompt) => sendSystemInstructionRef.current(prompt));
+      startAutoWakeup(async (prompt) => {
+        if (isGeneratingRef.current) return false;
+        const tempInstruction: ChatMessage = {
+          id: `wakeup_${Date.now()}`,
+          sessionId: session.id,
+          role: "system",
+          content: prompt,
+          status: "sent",
+          createdAt: new Date().toISOString(),
+        };
+        const tempHistory = [...messages, tempInstruction];
+        try {
+          await runManagedGenerationRef.current({ history: tempHistory, errorPrefix: "自动唤醒失败" });
+          return true;
+        } catch {
+          return false;
+        }
+      });
       return () => stopAutoWakeup();
     }, [session?.id]);
 
