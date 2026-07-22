@@ -6,6 +6,21 @@ import { kvGet, kvSet, registerKvMigration } from "../kv-db";
 import type { CloudBackupConfig } from "./config";
 import { ensureBucket, getObject, listObjects, putObject, removeObject } from "./storage-client";
 
+// Fallback hash when crypto.subtle is unavailable (e.g. non-HTTPS webview)
+async function safeDigest(data: ArrayBuffer): Promise<string> {
+  if (typeof crypto !== 'undefined' && crypto.subtle) {
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  // Simple fallback: use a basic string hash
+  const bytes = new Uint8Array(data);
+  let hash = 0;
+  for (let i = 0; i < bytes.length; i++) {
+    hash = ((hash << 5) - hash + bytes[i]) | 0;
+  }
+  return 'fb_' + (hash >>> 0).toString(16).padStart(8, '0') + '_' + bytes.length.toString(16);
+}
+
 /**
  * Module-level incremental cloud backup.
  *
