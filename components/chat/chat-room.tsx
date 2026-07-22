@@ -3056,17 +3056,17 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     useEffect(() => {
       if (!session?.id) return;
       startAutoWakeup(async (prompt) => {
-        const tempInstruction: ChatMessage = {
+        const wakeupMsg: ChatMessage = {
           id: `wakeup_${Date.now()}`,
           sessionId: session.id,
-          role: "system",
+          role: "user",
           content: prompt,
           status: "sent",
           createdAt: new Date().toISOString(),
         };
-        const tempHistory = [...messages, tempInstruction];
         try {
-          await runManagedGenerationRef.current({ history: tempHistory, errorPrefix: "自动唤醒失败" });
+          await pushChatMessage(session.id, wakeupMsg);
+          window.dispatchEvent(new CustomEvent(CHAT_REQUEST_REPLY_EVENT, { detail: { sessionId: session.id } }));
           return true;
         } catch {
           return false;
