@@ -3056,7 +3056,6 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     useEffect(() => {
       if (!session?.id) return;
       startAutoWakeup(async (prompt) => {
-        if (isGeneratingRef.current) return false;
         const tempInstruction: ChatMessage = {
           id: `wakeup_${Date.now()}`,
           sessionId: session.id,
