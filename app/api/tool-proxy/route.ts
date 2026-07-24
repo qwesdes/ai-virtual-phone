@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ProxyAgent, fetch as undiciFetch, type Dispatcher } from "undici";
 
-export const maxDuration = 120;
+export const maxDuration = 300;
 
 function getProxyDispatcher(): Dispatcher | undefined {
     const proxyUrl = process.env.https_proxy || process.env.HTTPS_PROXY
