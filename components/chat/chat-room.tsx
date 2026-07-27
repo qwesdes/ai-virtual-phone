@@ -609,6 +609,7 @@ const ChatTextInputBar = memo(forwardRef<ChatTextInputHandle, {
     onStopGeneration,
     onTriggerAIResponse,
     onSendSticker,
+	onSendFile,
 }, ref) {
     const [inputText, setInputText] = useState("");
     const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -680,6 +681,14 @@ const ChatTextInputBar = memo(forwardRef<ChatTextInputHandle, {
             label: action.label,
             onClick: () => onOpenCustomPlusAction(action),
         })),
+	{
+  icon: <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--c-text)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+    <polyline points="13 2 13 9 20 9" />
+  </svg>,
+  label: "发送文件",
+  onClick: () => { onSendFile?.(); onClosePanels(); },
+},
     ];
 
     return (
@@ -1077,6 +1086,7 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     const [isMultiSelectMode, setIsMultiSelectMode] = useState(false);
     const [selectedMessageIds, setSelectedMessageIds] = useState<Set<string>>(new Set());
     const [showConfirmMultiDelete, setShowConfirmMultiDelete] = useState(false);
+	const fileInputRef = useRef<HTMLInputElement>(null);
     const [expandedMonologueId, setExpandedThinkingId] = useState<string | null>(null);
     const [voiceTextIds, setVoiceTextIds] = useState<Set<string>>(new Set());
     const [editingMessageId, setEditingMessageId] = useState<string | null>(null);
@@ -3441,6 +3451,25 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
             showChatToast("请先等待对方回复");
             return false;
         }
+
+	const handleSendFile = useCallback((file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+fetch('/api/file-upload', {
+    method: 'POST',
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // 发一条用户消息告诉AI收到了文件
+        handleSendText(`[文件] ${data.originalName} (${(file.size / 1024).toFixed(1)}KB)`);
+      } else {
+        showChatToast(data.error || '文件上传失败');
+      }
+    })
+    .catch(() => showChatToast('文件上传失败'));
+}, [session?.id, handleSendText]);
         const trimmed = text.trim();
         if (!trimmed) return false;
 
@@ -5461,7 +5490,18 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
                 onStopGeneration={clearStuckGeneration}
                 onTriggerAIResponse={triggerAIResponse}
                 onSendSticker={(name, url) => { setShowStickerPanel(false); sendRichMessage("sticker", { label: name, stickerUrl: url }); }}
+				onSendFile={() => fileInputRef.current?.click()}
             />
+			<input
+  type="file"
+  ref={fileInputRef}
+  style={{ display: 'none' }}
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (file) handleSendFile(file);
+    e.target.value = '';
+  }}
+/>
             ))}
 
             {showConfirmMultiDelete && (
