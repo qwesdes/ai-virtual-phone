@@ -40,12 +40,12 @@ function blockedProxyUrlReason(rawUrl: string): string | null {
         return "URL 格式不合法";
     }
     // 放行本机MCP服务
-    const host = url.hostname.toLowerCase();
-    if (host === '127.0.0.1' && url.port === '8080') return null;
+    const rawHost = url.hostname.toLowerCase();
+    if (rawHost === '127.0.0.1' && url.port === '8080') return null;
     if (url.protocol !== "https:" && url.protocol !== "http:") {
         return "只允许 http/https URL";
     }
-    const host = url.hostname.toLowerCase().replace(/^\[|\]$/g, "");
+    const host = rawHost.replace(/^\[|\]$/g, "");
     const isIpv6Literal = host.includes(":");
     const blocked = host === "localhost"
         || host.endsWith(".localhost")
