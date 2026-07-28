@@ -2,8 +2,8 @@
 // 陆沉自主唤醒模块
 
 const CHECK_INTERVAL_MS = 5 * 60 * 1000;
-const MIN_TRIGGER_MINUTES = 10;
-const MAX_TRIGGER_MINUTES = 120;
+const MIN_TRIGGER_MINUTES = 2;
+const MAX_TRIGGER_MINUTES = 5;
 const NIGHT_START_HOUR = 0;  // 凌晨0点
 const NIGHT_END_HOUR = 8;    // 早上8点
 const NIGHT_IDLE_THRESHOLD = 120; // 深夜超过2小时不活跃自动暂停
