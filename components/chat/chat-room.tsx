@@ -3452,24 +3452,7 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
             return false;
         }
 
-	const handleSendFile = useCallback((file: File) => {
-  const formData = new FormData();
-  formData.append('file', file);
-fetch('/api/file-upload', {
-    method: 'POST',
-    body: formData,
-  })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        // 发一条用户消息告诉AI收到了文件
-        handleSendText(`[文件] ${data.originalName} (${(file.size / 1024).toFixed(1)}KB)`);
-      } else {
-        showChatToast(data.error || '文件上传失败');
-      }
-    })
-    .catch(() => showChatToast('文件上传失败'));
-}, [session?.id, handleSendText]);
+	
         const trimmed = text.trim();
         if (!trimmed) return false;
 
@@ -3499,6 +3482,24 @@ fetch('/api/file-upload', {
         setPendingGenerate(true);
         return true;
     };
+	const handleSendFile = useCallback((file: File) => {
+  const formData = new FormData();
+  formData.append('file', file);
+fetch('/api/file-upload', {
+    method: 'POST',
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        // 发一条用户消息告诉AI收到了文件
+        handleSendText(`[文件] ${data.originalName} (${(file.size / 1024).toFixed(1)}KB)`);
+      } else {
+        showChatToast(data.error || '文件上传失败');
+      }
+    })
+    .catch(() => showChatToast('文件上传失败'));
+}, [session?.id, handleSendText]);
 
     const formatOfflineTurnXml = useCallback((turn: ChatOfflineTurn): string => {
         if (turn.rawText?.trim()) return turn.rawText.trim();
