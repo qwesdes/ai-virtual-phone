@@ -3058,6 +3058,15 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
     };
 
     // 自动唤醒定时器
+    const [wakeupDebug, setWakeupDebug] = useState<string>("");
+    useEffect(() => {
+      const debugTimer = setInterval(() => {
+        const info = getWakeupDebugInfo();
+        setWakeupDebug(`idle:${info.idleMinutes}m th:${info.threshold}m timer:${info.timerActive ? 'ON' : 'OFF'} sleep:${info.sleeping ? 'Y' : 'N'}`);
+      }, 5000);
+      return () => clearInterval(debugTimer);
+    }, []);
+
     const runManagedGenerationRef = useRef(runManagedGeneration);
     useEffect(() => {
       runManagedGenerationRef.current = runManagedGeneration;
