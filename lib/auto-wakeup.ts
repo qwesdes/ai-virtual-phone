@@ -83,6 +83,16 @@ export function stopAutoWakeup() {
   }
 }
 
+export function getWakeupDebugInfo(): { idleMinutes: number; threshold: number; timerActive: boolean; sleeping: boolean; nightPaused: boolean } {
+  return {
+    idleMinutes: Math.round((Date.now() - lastActivityAt) / 60000 * 10) / 10,
+    threshold: Math.round(triggerThreshold * 10) / 10,
+    timerActive: wakeupTimer !== null,
+    sleeping: isSleeping,
+    nightPaused: autoNightPaused,
+  };
+}
+
 function resetTimer() {
   lastActivityAt = Date.now();
   triggerThreshold = randomThreshold();
