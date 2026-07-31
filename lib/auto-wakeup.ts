@@ -56,7 +56,7 @@ export function startAutoWakeup(injectAndTrigger: (prompt: string) => boolean) {
     if (idleMinutes >= triggerThreshold) {
       const prompt = getWakeupPrompt(Math.floor(idleMinutes));
       if (typeof window !== 'undefined') window.alert(`[唤醒] idle=${idleMinutes.toFixed(1)}m >= threshold=${triggerThreshold.toFixed(1)}m 触发!`);
-      injectAndTrigger(prompt);
+      const result = injectAndTrigger(prompt);
       resetTimer();
     }
   }, CHECK_INTERVAL_MS);
