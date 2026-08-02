@@ -5502,16 +5502,7 @@ fetch('/api/file-upload', {
                 onSendSticker={(name, url) => { setShowStickerPanel(false); sendRichMessage("sticker", { label: name, stickerUrl: url }); }}
 				onSendFile={() => fileInputRef.current?.click()}
             />
-			<input
-  type="file"
-  ref={fileInputRef}
-  style={{ display: 'none' }}
-  onChange={(e) => {
-    const file = e.target.files?.[0];
-    if (file) handleSendFile(file);
-    e.target.value = '';
-  }}
-/>
+	
             ))}
 
             {showConfirmMultiDelete && (
