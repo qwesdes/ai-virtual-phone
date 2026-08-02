@@ -3085,7 +3085,7 @@ export function ChatRoom({ session, onBack }: ChatRoomProps) {
         };
     
         try {
-        await pushChatMessage(session.id, wakeupMsg);
+        pushChatMessage(wakeupMsg);
         window.dispatchEvent(new CustomEvent(CHAT_REQUEST_REPLY_EVENT, { detail: { sessionId: session.id } }));
           return true;
         } catch {
